@@ -11,9 +11,9 @@ services:
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: ${DB_NAME:-todo_app}
-      POSTGRES_USER: ${DB_USERNAME:-todo_app}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:?Database password required}
+      POSTGRES_DB: todo_app
+      POSTGRES_USER: todo_app
+      POSTGRES_PASSWORD: sadeq
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -39,8 +39,8 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 5432
-      DB_NAME: test
-      DB_USERNAME: admin
+      DB_NAME: todo_app
+      DB_USERNAME: todo_app
       DB_PASSWORD: sadeq
     depends_on:
       db:
