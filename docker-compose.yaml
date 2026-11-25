@@ -39,10 +39,9 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 5432
-      DB_NAME: ${DB_NAME:-todo_app}
-      DB_USERNAME: ${DB_USERNAME:-todo_app}
-      DB_PASSWORD: ${DB_PASSWORD:?Database password required}
-
+      DB_NAME: test
+      DB_USERNAME: admin
+      DB_PASSWORD: sadeq
     depends_on:
       db:
         condition: service_healthy
