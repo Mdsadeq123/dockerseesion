@@ -1,66 +1,71 @@
 
 services:
 
+  # PostgreSQL database
+
   db:
-    image: postgres:17-alpine
+    image: postgres:16-alpine
+
     container_name: todo-db
+
+    restart: unless-stopped
 
     environment:
       POSTGRES_DB: ${DB_NAME:-todo_app}
       POSTGRES_USER: ${DB_USERNAME:-todo_app}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-todo_password}
-
-    ports:
-      - "5433:5432"
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Database password required}
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-todo_app} -d ${DB_NAME:-todo_app}"]
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${DB_USERNAME:-todo_app} -d ${DB_NAME:-todo_app}
       interval: 10s
       timeout: 5s
       retries: 5
 
-    restart: unless-stopped
+
+  # Spring Boot backend
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/backend:${IMAGE_TAG:-latest}
 
     container_name: todo-backend
+
+    restart: unless-stopped
 
     environment:
       DB_HOST: db
       DB_PORT: 5432
       DB_NAME: ${DB_NAME:-todo_app}
       DB_USERNAME: ${DB_USERNAME:-todo_app}
-      DB_PASSWORD: ${DB_PASSWORD:-todo_password}
-
-    ports:
-      - "8080:8080"
+      DB_PASSWORD: ${DB_PASSWORD:?Database password required}
 
     depends_on:
       db:
         condition: service_healthy
 
-    restart: unless-stopped
+    expose:
+      - "8080"
+
+
+  # React frontend
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${IMAGE_TAG:-latest}
 
     container_name: todo-frontend
 
+    restart: unless-stopped
+
     ports:
-      - "5173:80"
+      - "80:80"
 
     depends_on:
       - backend
 
-    restart: unless-stopped
 
 volumes:
   postgres_data:
