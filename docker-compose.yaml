@@ -30,7 +30,7 @@ services:
   # Spring Boot backend
 
   backend:
-    image: sadeq123/backend:${IMAGE_TAG:-latest}
+    image: sadeq123/todo-backend:${IMAGE_TAG:-latest}
 
     container_name: todo-backend
 
@@ -53,7 +53,7 @@ services:
   # React frontend
 
   frontend:
-    image: sadeq123/frontend:${IMAGE_TAG:-latest}
+    image: sadeq123/todo-frontend:${IMAGE_TAG:-latest}
 
     container_name: todo-frontend
 
